@@ -61,7 +61,7 @@
                             @foreach($videos as $video)
                                 <tr>
                                     <td>{{ $video->title }}</td>
-                                    <td>{{ $video->size }}</td>
+                                    <td>{{ number_format($video->size / 1000000) }} MB</td>
                                     <td>{{ $video->created_at->format('Y/m/d') }}</td>
                                     <td class="text-end">
                                         <button data-clipboard-text="{{ route('show-video-url', $video->hashname) }}" class="btn btn-primary btn-copy">
