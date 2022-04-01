@@ -6,7 +6,10 @@
         // clipboard
         var clipboard = new ClipboardJS('.btn-copy');
         clipboard.on('success', function(e) {
-            console.log('URL berhasil disalin.');
+            var option = {delay: 1500}
+            var clipToastEl = document.querySelector('.toast');
+            var clipToast = new bootstrap.Toast(clipToastEl, option);
+            clipToast.show();
         });
     </script>
 @endpush
@@ -79,6 +82,18 @@
                 @else
                     <div class="alert alert-warning m-0">No video found.</div>
                 @endif
+            </div>
+        </div>
+    </div>
+
+    <div class="position-fixed bottom-0 end-0 p-4">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Info</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                URL berhasil disalin.
             </div>
         </div>
     </div>
