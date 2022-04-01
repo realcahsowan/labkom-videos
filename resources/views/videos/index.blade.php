@@ -11,6 +11,23 @@
             var clipToast = new bootstrap.Toast(clipToastEl, option);
             clipToast.show();
         });
+
+        // delete confirmation
+        function confirmDelete(e) {
+            e.preventDefault();
+
+            var confirmationModal = new bootstrap.Modal(document.getElementById('delete-confirmation'));
+            confirmationModal.show();
+
+            var btnSure = document.querySelector('.btn-sure');
+            btnSure.setAttribute('data-url', e.target.dataset.deleteUrl);
+        }
+
+        function executeDelete(e) {
+            var deleteFormEl = document.getElementById('delete-form');
+            deleteFormEl.setAttribute('action', e.target.dataset.url);
+            deleteFormEl.submit();
+        }
     </script>
 @endpush
 
@@ -49,31 +66,17 @@
                                     <td class="text-end">
                                         <button data-clipboard-text="{{ route('show-video-url', $video->hashname) }}" class="btn btn-primary btn-copy">
                                             <span>
-                                                <i class="bi-clipboard-fill"></i>
+                                                <i class="bi-clipboard2-check-fill"></i>
                                             </span>
                                             <span>Video URL</span>
                                         </button>
                                         <button data-clipboard-text="{{ route('download-video-url', $video->hashname) }}" class="btn btn-success mx-2 btn-copy">
                                             <span>
-                                                <i class="bi-clipboard-fill"></i>
+                                                <i class="bi-clipboard2-check-fill"></i>
                                             </span>
                                             <span>Download URL</span>
                                         </button>
-                                        <button class="btn btn-danger"
-                                            onclick="event.preventDefault();
-                                            if (window.confirm('Are you sure to delete this item?')) {
-                                                 document.getElementById('delete-form').submit();
-                                            }"
-                                        >
-                                            <span>
-                                                <i class="bi-trash-fill"></i>
-                                            </span>
-                                            <span>Delete</span>
-                                        </button>
-                                        <form id="delete-form" action="{{ route('videos.destroy', $video->id) }}" method="POST" class="d-none">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
+                                        <button data-delete-url="{{ route('videos.destroy', $video->id) }}" class="btn btn-danger" onclick="confirmDelete(event)">Delete</button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -97,5 +100,30 @@
             </div>
         </div>
     </div>
+
+    {{-- confirmation modal --}}
+    <div id="delete-confirmation" class="modal" data-bs-backdrop="static" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure to delete this item?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-sure" onclick="executeDelete(event)">Yes, Delete it</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- hidden form --}}
+    <form id="delete-form" action="" method="POST" class="d-none">
+        @csrf
+        @method('DELETE')
+    </form>
 </div>
 @endsection
